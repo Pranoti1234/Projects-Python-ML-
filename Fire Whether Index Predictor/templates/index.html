@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fire Weather Index Predictor</title>
+
+  <style>
+    /* ---------- Global ---------- */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      background: url("{{ url_for('static', filename='images/front_page.png') }}") no-repeat center center/cover;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(255, 69, 0, 0.3);
+      backdrop-filter: blur(12px);
+      padding: 40px 50px;
+      width: 90%;
+      max-width: 750px;
+      text-align: center;
+      transition: transform 0.3s ease;
+      margin-top: 35px; 
+      margin-bottom: 35px;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+    }
+
+    /* ---------- Header ---------- */
+    .header {
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      font-size: 50px;
+      margin-bottom: 10px;
+      animation: firePulse 1.5s infinite alternate;
+    }
+
+    @keyframes firePulse {
+      from { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff6347; }
+      to { text-shadow: 0 0 25px #ffa500, 0 0 50px #ff4500; }
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #ffcccb;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: #ddd;
+      margin-top: 8px;
+    }
+
+    /* ---------- Form ---------- */
+    .form-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      width: 100%;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #ffd9d9;
+      margin-bottom: 5px;
+    }
+
+    small {
+      font-size: 0.8rem;
+      color: #ccc;
+      margin-bottom: 8px;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 10px #ff6347;
+    }
+
+    /* ---------- Button ---------- */
+    .submit-btn {
+      background: linear-gradient(90deg, #ff4500, #ff6347, #ffa500);
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .submit-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #ff4500;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 600px) {
+      .container {
+        padding: 30px 25px;
+      }
+      h1 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="container">
+    <div class="header">
+      <div class="logo">🔥</div>
+      <h1>Fire Weather Index Predictor</h1>
+      <p>Predict fire danger levels using key meteorological indices and weather data.</p>
+    </div>
+
+    <form action="/predict" method="post" class="form-box">
+      <div class="input-grid">
+
+        <div class="form-group">
+          <label>Initial Spread Index (ISI)</label>
+          <small>Indicates potential fire spread rate (Enter 0–20)</small>
+          <input type="number" name="ISI" step="0.1" min="0" max="20" required>
+        </div>
+
+        <div class="form-group">
+          <label>Duff Moisture Code (DMC)</label>
+          <small>Measures moisture in moderately deep forest layers (Enter 0–150)</small>
+          <input type="number" name="DMC" step="0.1" min="0" max="150" required>
+        </div>
+
+        <div class="form-group">
+          <label>Build Up Index (BUI)</label>
+          <small>Represents the amount of fuel available (Enter 0–200)</small>
+          <input type="number" name="BUI" step="0.1" min="0" max="200" required>
+        </div>
+
+        <div class="form-group">
+          <label>Drought Code (DC)</label>
+          <small>Reflects long-term moisture content in deep soil (Enter 0–800)</small>
+          <input type="number" name="DC" step="0.1" min="0" max="800" required>
+        </div>
+
+        <div class="form-group">
+          <label>Fine Fuel Moisture Code (FFMC)</label>
+          <small>Indicates moisture in surface litter (Enter 0–100)</small>
+          <input type="number" name="FFMC" step="0.1" min="0" max="100" required>
+        </div>
+
+        <div class="form-group">
+          <label>Temperature (°C)</label>
+          <small>Ambient air temperature (Enter -10 to 40°C)</small>
+          <input type="number" name="Temperature" step="0.1" min="-10" max="40" required>
+        </div>
+
+        <div class="form-group">
+          <label>Rain (mm)</label>
+          <small>Precipitation in the past 24 hours (Enter 0–30 mm)</small>
+          <input type="number" name="Rain" step="0.01" min="0" max="30" required>
+        </div>
+
+        <div class="form-group">
+          <label>Relative Humidity (%)</label>
+          <small>Amount of moisture in air (Enter 0–100%)</small>
+          <input type="number" name="RH" step="0.1" min="0" max="100" required>
+        </div>
+
+        <div class="form-group">
+          <label>Wind Speed (km/h)</label>
+          <small>Average wind speed (Enter 0–100 km/h)</small>
+          <input type="number" name="WIND" step="0.1" min="0" max="100" required>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Predict Fire Weather Index</button>
+    </form>
+  </section>
+</body>
+</html>
